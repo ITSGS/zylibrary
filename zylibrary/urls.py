@@ -15,7 +15,15 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
+from django.conf.urls import include
+from rest_framework.schemas import get_schema_view
+from rest_framework_jwt.views import obtain_jwt_token
+
+schema_view = get_schema_view(title='Web Api')
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'api-token-auth', obtain_jwt_token),
+    url(r'^api', schema_view),
+    url(r'^book/', include('book.urls')),
 ]

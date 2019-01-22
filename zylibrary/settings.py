@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'book',
-    'rest_framework'
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -124,3 +124,65 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+# base:  account and password Authentication
+# session: session_id
+REST_FRAMEWORK = {
+   'DEFAULT_PERMISSION_CLASSES': (
+        # drf,middleware auth session add user to request object
+        'rest_framework.permissions.IsAuthenticated',
+   ),
+   'DEFAULT_AUTHENTICATION_CLASSES': (
+       # 'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+       'rest_framework.authentication.SessionAuthentication',
+       'rest_framework.authentication.BasicAuthentication',
+    )
+}
+
+
+# 日志切割参考https://docs.python.org/3/library/logging.handlers.html#timedrotatingfilehandler
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        # 简单的日志格式
+        'standard': {
+            'format': '[%(asctime)s][%(levelname)s]%(message)s <- %(filename)s:%(lineno)d'
+        }
+    },
+
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'standard'
+        },
+        'default': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.TimedRotatingFileHandler',
+            'filename': 'zy_log/book.log',
+            'when': 'midnight',
+            'interval': 1,
+            'backupCount': 100,
+            'formatter': 'standard',
+            'encoding': 'utf-8'
+        }
+    },
+
+    # 定义各种logger以分别处理不同模块
+    'loggers': {
+        '': {
+            'handlers': ['default', 'console'],
+            'level': 'DEBUG',
+            'propagate': True
+        },
+        # 'django.db.backends': {
+        #     'handlers': ['console'],
+        #     'level': 'DEBUG',
+        #     'propagate': True
+        # }
+    }
+
+}
