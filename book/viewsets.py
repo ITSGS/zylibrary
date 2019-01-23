@@ -5,11 +5,16 @@ from rest_framework.decorators import list_route
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import viewsets
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import OrderingFilter, SearchFilter
 
 
 class CategoryViewSets(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+    filter_backends = (OrderingFilter, SearchFilter, DjangoFilterBackend)
+    filter_field = ('id', 'name')
+    search_field = ('id', 'name')
 
     def list(self, request, *args, **kwargs):
         try:
